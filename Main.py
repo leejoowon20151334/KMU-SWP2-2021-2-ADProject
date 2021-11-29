@@ -5,6 +5,8 @@ from PyQt5.QtGui import QPainter, QColor, QPen
 from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QPushButton, QTextEdit, \
     QGridLayout, QLineEdit
 from Sorts_1 import Sorts1 as Sort1
+from Sorts_3 import Sorts3 as Sort3
+from Description import description
 
 
 class UI(QWidget):
@@ -13,9 +15,13 @@ class UI(QWidget):
         super().__init__()
         self.values = []
         self.colors = {}
+        self.uiSize = {
+            'width': 800,
+            'height': 500,
+        }
         self.graphUIConfig = {
             'start': {'x': 10, 'y': 110},
-            'end': {'x': 790, 'y': 490},
+            'end': {'x': self.uiSize['width'] - 210, 'y': self.uiSize['height'] - 10},
             'interval': 50,  # 막대 너비의 %단위
             'color': [70, 180, 50],
             'background': [0, 0, 0],
@@ -33,15 +39,16 @@ class UI(QWidget):
         self.timer.timeout.connect(self.drawUI)
 
         self.sort1 = Sort1()
+        self.sort3 = Sort3()
 
         self.initUI()
         self.setEvents()
 
     def initUI(self):
 
-        self.setGeometry(300, 300, 800, 500)
-        self.setFixedSize(800,500)
-        self.setWindowTitle('ADProject - Team F(20151334,')
+        self.setGeometry(300, 300, self.uiSize['width'], self.uiSize['height'])
+        self.setFixedSize(self.uiSize['width'], self.uiSize['height'])
+        self.setWindowTitle('ADProject - Team F')
         self.mainBox = QVBoxLayout()
         self.mainBox.addStretch(0)
 
@@ -80,6 +87,14 @@ class UI(QWidget):
         buttonBox2.addWidget(self.UI['selectionButton'])
         buttonBox2.addWidget(self.UI['bogoButton'])
 
+        textBoxLayout = QHBoxLayout()
+        emptyBox = QWidget()
+
+        self.UI['text'] = QTextEdit()
+        self.UI['text'].setReadOnly(True)
+        textBoxLayout.addWidget(emptyBox, self.graphUIConfig['end']['x'] - self.graphUIConfig['start']['x'] + 20)
+        textBoxLayout.addWidget(self.UI['text'], 200)
+
         # 임시 비활성화
         self.UI['quickButton'].setDisabled(True)
         self.UI['heapButton'].setDisabled(True)
@@ -89,9 +104,13 @@ class UI(QWidget):
         self.mainBox.addLayout(inputBox)
         self.mainBox.addLayout(buttonBox1)
         self.mainBox.addLayout(buttonBox2)
-        self.mainBox.addStretch(1)
+        self.mainBox.addLayout(textBoxLayout, 1)
         self.setLayout(self.mainBox)
         self.show()
+
+    def setText(self, text):
+        self.UI['text'].clear()
+        self.UI['text'].append(text)
 
     def setEvents(self):
         self.UI['bubbleButton'].clicked.connect(self.bubble)
@@ -104,7 +123,8 @@ class UI(QWidget):
     def bubble(self):
         start = int(self.UI['startEdit'].text().strip())
         end = int(self.UI['endEdit'].text().strip())
-        self.drawList = self.sort1.bubbleSort(start, end)
+        self.setText(description['bubbleSort'])
+        self.drawList = self.sort3.bubbleSort(start, end)
 
     def counting(self):
         start = int(self.UI['startEdit'].text().strip())
@@ -192,10 +212,13 @@ class UI(QWidget):
     # drawList 순서대로 막대 갱신
     def drawUI(self):
         if len(self.drawList) < 1: return
-        self.values = list(self.drawList[0]['values'])
-        self.colors = self.drawList[0]['color']
-        self.drawList.pop(0)
-        self.update()
+        if 'error' in self.drawList[0]:
+            self.setText(self.drawList[0]['error'])
+        else:
+            self.values = list(self.drawList[0]['values'])
+            self.colors = self.drawList[0]['color']
+            self.drawList.pop(0)
+            self.update()
 
 
 if __name__ == '__main__':
