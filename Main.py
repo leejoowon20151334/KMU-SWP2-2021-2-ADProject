@@ -85,11 +85,6 @@ class UI(QWidget):
         self.UI['heapButton'].setDisabled(True)
         self.UI['insertionButton'].setDisabled(True)
         self.UI['mergeButton'].setDisabled(True)
-        self.UI['countingButton'].setDisabled(True)
-        self.UI['introButton'].setDisabled(True)
-        self.UI['cocktailButton'].setDisabled(True)
-        self.UI['selectionButton'].setDisabled(True)
-        self.UI['bogoButton'].setDisabled(True)
 
         self.mainBox.addLayout(inputBox)
         self.mainBox.addLayout(buttonBox1)
@@ -100,11 +95,41 @@ class UI(QWidget):
 
     def setEvents(self):
         self.UI['bubbleButton'].clicked.connect(self.bubble)
+        self.UI['countingButton'].clicked.connect(self.counting)
+        self.UI['bogoButton'].clicked.connect(self.bogo)
+        self.UI['cocktailButton'].clicked.connect(self.cocktail)
+        self.UI['selectionButton'].clicked.connect(self.selection)
+        self.UI['introButton'].clicked.connect(self.intro)
 
     def bubble(self):
         start = int(self.UI['startEdit'].text().strip())
         end = int(self.UI['endEdit'].text().strip())
         self.drawList = self.sort1.bubbleSort(start, end)
+
+    def counting(self):
+        start = int(self.UI['startEdit'].text().strip())
+        end = int(self.UI['endEdit'].text().strip())
+        self.drawList = self.sort1.counting_sort_2(start, end)
+
+    def bogo(self):
+        start = int(self.UI['startEdit'].text().strip())
+        end = int(self.UI['endEdit'].text().strip())
+        self.drawList = self.sort1.bogo_sort(start, end)
+
+    def cocktail(self):
+        start = int(self.UI['startEdit'].text().strip())
+        end = int(self.UI['endEdit'].text().strip())
+        self.drawList = self.sort1.cocktail_sort(start, end)
+
+    def selection(self):
+        start = int(self.UI['startEdit'].text().strip())
+        end = int(self.UI['endEdit'].text().strip())
+        self.drawList = self.sort1.selection_sort(start, end)
+
+    def intro(self):
+        start = int(self.UI['startEdit'].text().strip())
+        end = int(self.UI['endEdit'].text().strip())
+        self.drawList = self.sort1.intro_sort(start, end)
 
     # update시 self.values로 막대를 그림
     def paintEvent(self, event):
