@@ -16,12 +16,12 @@ class UI(QWidget):
         self.values = []
         self.colors = {}
         self.uiSize = {
-            'width': 800,
+            'width': 1200,
             'height': 500,
         }
         self.graphUIConfig = {
             'start': {'x': 10, 'y': 110},
-            'end': {'x': self.uiSize['width'] - 210, 'y': self.uiSize['height'] - 10},
+            'end': {'x': self.uiSize['width'] - 310, 'y': self.uiSize['height'] - 10},
             'interval': 50,  # 막대 너비의 %단위
             'color': [70, 180, 50],
             'background': [0, 0, 0],
@@ -93,7 +93,7 @@ class UI(QWidget):
         self.UI['text'] = QTextEdit()
         self.UI['text'].setReadOnly(True)
         textBoxLayout.addWidget(emptyBox, self.graphUIConfig['end']['x'] - self.graphUIConfig['start']['x'] + 20)
-        textBoxLayout.addWidget(self.UI['text'], 200)
+        textBoxLayout.addWidget(self.UI['text'], 300)
 
         # 임시 비활성화
         self.UI['quickButton'].setDisabled(True)
@@ -129,26 +129,31 @@ class UI(QWidget):
     def counting(self):
         start = int(self.UI['startEdit'].text().strip())
         end = int(self.UI['endEdit'].text().strip())
+        self.setText(description['countingSort'])
         self.drawList = self.sort1.counting_sort_2(start, end)
 
     def bogo(self):
         start = int(self.UI['startEdit'].text().strip())
         end = int(self.UI['endEdit'].text().strip())
+        self.setText(description['bogoSort'])
         self.drawList = self.sort1.bogo_sort(start, end)
 
     def cocktail(self):
         start = int(self.UI['startEdit'].text().strip())
         end = int(self.UI['endEdit'].text().strip())
+        self.setText(description['cocktailSort'])
         self.drawList = self.sort1.cocktail_sort(start, end)
 
     def selection(self):
         start = int(self.UI['startEdit'].text().strip())
         end = int(self.UI['endEdit'].text().strip())
+        self.setText(description['selectionSort'])
         self.drawList = self.sort1.selection_sort(start, end)
 
     def intro(self):
         start = int(self.UI['startEdit'].text().strip())
         end = int(self.UI['endEdit'].text().strip())
+        self.setText(description['introSort'])
         self.drawList = self.sort1.intro_sort(start, end)
 
     # update시 self.values로 막대를 그림
