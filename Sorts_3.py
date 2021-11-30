@@ -28,7 +28,7 @@ class Sorts3():
                     drawList += [{'values': list(values), 'color': {}}]
 
         # error 문자열 표시 예제
-        drawList += [{'error':"에러"}]
+        drawList[-1]['error'] ="에러"
 
         return drawList
 

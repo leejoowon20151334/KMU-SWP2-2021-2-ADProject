@@ -214,7 +214,7 @@ class UI(QWidget):
         if len(self.drawList) < 1: return
         if 'error' in self.drawList[0]:
             self.setText(self.drawList[0]['error'])
-        else:
+        if 'values' in self.drawList[0] and 'color' in self.drawList[0]:
             self.values = list(self.drawList[0]['values'])
             self.colors = self.drawList[0]['color']
             self.drawList.pop(0)
