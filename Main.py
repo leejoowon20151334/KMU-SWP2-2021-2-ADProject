@@ -1,11 +1,11 @@
 import sys
 
-from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtGui import QPainter, QColor, QPen
-from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QComboBox, QPushButton, QTextEdit, \
-    QGridLayout, QLineEdit
+from PyQt5.QtCore import QTimer
+from PyQt5.QtGui import QPainter, QColor, QIntValidator
+from PyQt5.QtWidgets import QApplication, QWidget, QVBoxLayout, QHBoxLayout, QLabel, QPushButton, QTextEdit, \
+    QLineEdit
 from Sorts_1 import Sorts1 as Sort1
-from Sorts_3 import Sorts3 as Sort3
+from Sorts_2 import Sorts2 as Sort2
 from Description import description
 
 
@@ -39,7 +39,7 @@ class UI(QWidget):
         self.timer.timeout.connect(self.drawUI)
 
         self.sort1 = Sort1()
-        self.sort3 = Sort3()
+        self.sort2 = Sort2()
 
         self.initUI()
         self.setEvents()
@@ -54,7 +54,11 @@ class UI(QWidget):
 
         inputBox = QHBoxLayout()
         self.UI['startEdit'] = QLineEdit()
+        self.UI['startEdit'].setPlaceholderText("min : 1")
+        self.UI['startEdit'].setValidator(QIntValidator(1, 300, self))
         self.UI['endEdit'] = QLineEdit()
+        self.UI['endEdit'].setPlaceholderText("max : 300")
+        self.UI['endEdit'].setValidator(QIntValidator(1, 300, self))
         for widget in [
             QLabel('Start:', self), self.UI['startEdit'],
             QLabel('End:', self), self.UI['endEdit'],
@@ -95,12 +99,6 @@ class UI(QWidget):
         textBoxLayout.addWidget(emptyBox, self.graphUIConfig['end']['x'] - self.graphUIConfig['start']['x'] + 20)
         textBoxLayout.addWidget(self.UI['text'], 300)
 
-        # 임시 비활성화
-        self.UI['quickButton'].setDisabled(True)
-        self.UI['heapButton'].setDisabled(True)
-        self.UI['insertionButton'].setDisabled(True)
-        self.UI['mergeButton'].setDisabled(True)
-
         self.mainBox.addLayout(inputBox)
         self.mainBox.addLayout(buttonBox1)
         self.mainBox.addLayout(buttonBox2)
@@ -119,42 +117,81 @@ class UI(QWidget):
         self.UI['cocktailButton'].clicked.connect(self.cocktail)
         self.UI['selectionButton'].clicked.connect(self.selection)
         self.UI['introButton'].clicked.connect(self.intro)
+        self.UI['insertionButton'].clicked.connect(self.insert)
+        self.UI['heapButton'].clicked.connect(self.heap)
+        self.UI['quickButton'].clicked.connect(self.quick)
+        self.UI['mergeButton'].clicked.connect(self.merge)
+
+    def getRange(self):
+        start = int(self.UI['startEdit'].text().strip() if self.UI['startEdit'].text().strip()!="" else 1)
+        end = int(self.UI['endEdit'].text().strip() if self.UI['endEdit'].text().strip()!="" else 300)
+        if start < 1:
+            start = 1
+        elif start > 299:
+            start = 299
+
+        if end > 300:
+            end = 300
+        elif end < 1:
+            end = 1
+
+        if end < start:
+            start, end = end, start
+
+        self.UI['startEdit'].setText(str(start))
+        self.UI['endEdit'].setText(str(end))
+
+        return {'start': start, 'end': end}
 
     def bubble(self):
-        start = int(self.UI['startEdit'].text().strip())
-        end = int(self.UI['endEdit'].text().strip())
+        range = self.getRange()
         self.setText(description['bubbleSort'])
-        self.drawList = self.sort3.bubbleSort(start, end)
+        self.drawList = self.sort2.bubbleSort(range['start'], range['end'])
+
+    def merge(self):
+        range = self.getRange()
+        self.setText(description['mergeSort'])
+        self.drawList = self.sort2.mergeSort(range['start'], range['end'])
 
     def counting(self):
-        start = int(self.UI['startEdit'].text().strip())
-        end = int(self.UI['endEdit'].text().strip())
+        range = self.getRange()
         self.setText(description['countingSort'])
-        self.drawList = self.sort1.counting_sort_2(start, end)
+        self.drawList = self.sort1.counting_sort(range['start'], range['end'])
 
     def bogo(self):
-        start = int(self.UI['startEdit'].text().strip())
-        end = int(self.UI['endEdit'].text().strip())
+        range = self.getRange()
         self.setText(description['bogoSort'])
-        self.drawList = self.sort1.bogo_sort(start, end)
+        self.drawList = self.sort1.bogo_sort(range['start'], range['end'])
 
     def cocktail(self):
-        start = int(self.UI['startEdit'].text().strip())
-        end = int(self.UI['endEdit'].text().strip())
+        range = self.getRange()
         self.setText(description['cocktailSort'])
-        self.drawList = self.sort1.cocktail_sort(start, end)
+        self.drawList = self.sort1.cocktail_sort(range['start'], range['end'])
 
     def selection(self):
-        start = int(self.UI['startEdit'].text().strip())
-        end = int(self.UI['endEdit'].text().strip())
+        range = self.getRange()
         self.setText(description['selectionSort'])
-        self.drawList = self.sort1.selection_sort(start, end)
+        self.drawList = self.sort1.selection_sort(range['start'], range['end'])
 
     def intro(self):
-        start = int(self.UI['startEdit'].text().strip())
-        end = int(self.UI['endEdit'].text().strip())
+        range = self.getRange()
         self.setText(description['introSort'])
-        self.drawList = self.sort1.intro_sort(start, end)
+        self.drawList = self.sort1.intro_sort(range['start'], range['end'])
+
+    def insert(self):
+        range = self.getRange()
+        self.setText(description['insertSort'])
+        self.drawList = self.sort1.insertion_sort(range['start'], range['end'])
+
+    def heap(self):
+        range = self.getRange()
+        self.setText(description['heapSort'])
+        self.drawList = self.sort1.heap_sort(range['start'], range['end'])
+
+    def quick(self):
+        range = self.getRange()
+        self.setText(description['quickSort'])
+        self.drawList = self.sort1.quick_sort(range['start'], range['end'])
 
     # update시 self.values로 막대를 그림
     def paintEvent(self, event):
